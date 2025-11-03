@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blockchain Verifier - Login</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="login-page">
+  <div class="header">
+    <h1>Welcome to Blockchain Verifier</h1>
+    <div class="nav-buttons">
+      <a href="/" class="nav-btn">Home</a>
+      <a href="/login-page" class="nav-btn" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">Login</a>
+    </div>
+  </div>
+
+  <div class="container">
+    <form id="loginForm">
+      <div class="form-group">
+        <label for="username">Username</label>
+        <input type="text" id="username" name="username" class="form-control" required>
+      </div>
+      
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" class="form-control" required>
+      </div>
+      
+      <button type="submit" class="btn btn-primary">Login</button>
+    </form>
+    
+    <div id="message" style="display: none;"></div>
+  </div>
+
+  <script>
+    document.getElementById('loginForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+      
+      try {
+        const response = await fetch('/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ username, password })
+        });
+        
+        const result = await response.json();
+        
+        const messageDiv = document.getElementById('message');
+        messageDiv.style.display = 'block';
+        
+        if (result.status === 'success') {
+          messageDiv.className = 'message success';
+          messageDiv.textContent = 'Login successful! Redirecting...';
+          
+          // Store session ID
+          localStorage.setItem('sessionId', result.sessionId);
+          localStorage.setItem('userRole', result.role);
+          
+          setTimeout(() => {
+            window.location.href = `/dashboard?sessionId=${result.sessionId}`;
+          }, 1000);
+        } else {
+          messageDiv.className = 'message error';
+          messageDiv.textContent = result.error;
+        }
+      } catch (error) {
+        console.error('Login error:', error);
+        const messageDiv = document.getElementById('message');
+        messageDiv.style.display = 'block';
+        messageDiv.className = 'message error';
+        messageDiv.textContent = 'Login failed. Please try again.';
+      }
+    });
+  </script>
+</body>
+</html>

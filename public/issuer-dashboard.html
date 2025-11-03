@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Issuer Dashboard - Blockchain Verifier</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="issuer-page">
+  <div class="header">
+    <button class="nav-btn" onclick="logout()" style="background: linear-gradient(135deg, #ff6b6b 0%, #ffa8a8 100%);">Logout</button>
+    <h1>Welcome to Blockchain Certificate Verifier</h1>
+    <div style="width: 120px;"></div> <!-- Spacer for balance -->
+  </div>
+
+  <div class="dashboard-container">
+    <div class="action-buttons">
+      <button class="action-btn" onclick="showAddCertificate()">Add Certificate</button>
+    </div>
+
+    <!-- Add Certificate Form -->
+    <div class="card" id="addCertificateCard">
+      <h2 style="text-align: center; margin-bottom: 30px; color: #2c3e50;">Issue New Certificate</h2>
+      
+      <form id="certificateForm" enctype="multipart/form-data">
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="department">Department *</label>
+            <input type="text" id="department" name="department" class="form-control" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="name">Name *</label>
+            <input type="text" id="name" name="name" class="form-control" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="academicYear">Academic Year *</label>
+            <input type="text" id="academicYear" name="academicYear" class="form-control" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="regNo">Registration Number *</label>
+            <input type="text" id="regNo" name="regNo" class="form-control" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="joinDate">Join Date *</label>
+            <input type="date" id="joinDate" name="joinDate" class="form-control" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="endDate">End Date *</label>
+            <input type="date" id="endDate" name="endDate" class="form-control" required>
+          </div>
+          
+          <div class="form-group full-width">
+            <label for="marks">Marks *</label>
+            <input type="text" id="marks" name="marks" class="form-control" required>
+          </div>
+          
+          <div class="form-group full-width">
+            <label for="certificate">Upload Certificate (PDF) *</label>
+            <input type="file" id="certificate" name="certificate" accept=".pdf" class="form-control" required>
+          </div>
+        </div>
+        
+        <button type="submit" class="btn btn-success" style="margin-top: 20px;">Submit Certificate</button>
+      </form>
+      
+      <div id="uploadMessage" style="display: none;"></div>
+      
+      <!-- QR Code Section (shown after successful upload) -->
+      <div id="qrCodeSection" class="qr-section" style="display: none;">
+        <h3 style="color: #2c3e50; margin-bottom: 20px;">📱 Certificate QR Code</h3>
+        <div class="qr-code-container">
+          <img id="qrCodeImage" src="" alt="QR Code" class="qr-image">
+          <a id="qrDownloadLink" class="qr-download-btn" download="certificate_qr.png">
+            📥 Download QR Code
+          </a>
+          <p style="color: #666; font-size: 14px; margin-top: 10px;">
+            Scan this QR code to verify the certificate authenticity
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function showAddCertificate() {
+      document.getElementById('addCertificateCard').classList.add('active');
+      // Hide QR code section when showing form
+      document.getElementById('qrCodeSection').style.display = 'none';
+    }
+
+    function logout() {
+      const sessionId = localStorage.getItem('sessionId');
+      
+      fetch('/logout', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ sessionId })
+      }).then(() => {
+        localStorage.removeItem('sessionId');
+        localStorage.removeItem('userRole');
+        window.location.href = '/';
+      });
+    }
+
+    document.getElementById('certificateForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      
+      const formData = new FormData(this);
+      
+      try {
+        const response = await fetch('/upload', {
+          method: 'POST',
+          body: formData
+        });
+        
+        const result = await response.json();
+        
+        const messageDiv = document.getElementById('uploadMessage');
+        const qrSection = document.getElementById('qrCodeSection');
+        messageDiv.style.display = 'block';
+        qrSection.style.display = 'none';
+        
+        if (result.status === 'success') {
+          messageDiv.className = 'message success';
+          messageDiv.textContent = result.message + ' QR code generated successfully!';
+          
+          // Show QR Code
+          if (result.qrCodeUrl) {
+            const qrImage = document.getElementById('qrCodeImage');
+            const qrDownloadLink = document.getElementById('qrDownloadLink');
+            
+            qrImage.src = result.qrCodeUrl;
+            qrDownloadLink.href = result.qrCodeUrl;
+            qrSection.style.display = 'block';
+          }
+          
+          document.getElementById('certificateForm').reset();
+        } else {
+          messageDiv.className = 'message error';
+          messageDiv.textContent = result.error;
+        }
+      } catch (error) {
+        console.error('Upload error:', error);
+        const messageDiv = document.getElementById('uploadMessage');
+        messageDiv.style.display = 'block';
+        messageDiv.className = 'message error';
+        messageDiv.textContent = 'Upload failed. Please try again.';
+      }
+    });
+
+    // Show add certificate form by default
+    showAddCertificate();
+  </script>
+</body>
+</html>

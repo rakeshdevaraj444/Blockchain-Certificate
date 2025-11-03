@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Certificate Verifier - Blockchain Verifier</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="verifier-page">
+  <div class="header">
+    <a href="/" class="nav-btn" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">Home</a>
+    <h1>Blockchain Certificate Verifier</h1>
+    <div style="width: 120px;"></div> <!-- Spacer for balance -->
+  </div>
+
+  <div class="dashboard-container">
+    <div class="verification-section">
+      <h2 style="text-align: center; margin-bottom: 30px; color: #2c3e50;">Verify Certificate</h2>
+      
+      <div class="verification-methods">
+        <!-- Method 1: File Upload -->
+        <div class="verification-method">
+          <div class="method-icon">📄</div>
+          <h3 class="method-title">Upload Certificate</h3>
+          <form id="verifyForm" enctype="multipart/form-data">
+            <div class="form-group">
+              <label for="certificateFile">Upload Certificate (PDF)</label>
+              <input type="file" id="certificateFile" name="certificate" accept=".pdf" class="form-control">
+            </div>
+            <button type="submit" class="btn btn-primary" style="width: 100%;">Verify by Upload</button>
+          </form>
+        </div>
+
+        <!-- Method 2: Hash Verification -->
+        <div class="verification-method">
+          <div class="method-icon">🔍</div>
+          <h3 class="method-title">Verify by Hash</h3>
+          <div class="hash-input-section">
+            <div class="form-group">
+              <label for="manualHash">Enter Certificate Hash</label>
+              <input type="text" id="manualHash" placeholder="Enter certificate hash" class="form-control hash-input">
+            </div>
+            <button type="button" class="btn btn-primary" onclick="verifyManualHash()" style="width: 100%;">
+              Verify by Hash
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      <div id="verifyMessage" style="display: none;"></div>
+      <div id="certificateDetails" style="display: none;"></div>
+    </div>
+  </div>
+
+  <script>
+    // Verify by manual hash input
+    function verifyManualHash() {
+      const hash = document.getElementById('manualHash').value.trim();
+      if (!hash) {
+        alert('Please enter a certificate hash');
+        return;
+      }
+      verifyByHash(hash);
+    }
+
+    // Common verification function for hash
+    function verifyByHash(hash) {
+      fetch('/verify-hash', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ hash: hash })
+      })
+      .then(response => response.json())
+      .then(result => {
+        displayVerificationResult(result);
+      })
+      .catch(error => {
+        console.error('Verify hash error:', error);
+        const messageDiv = document.getElementById('verifyMessage');
+        messageDiv.style.display = 'block';
+        messageDiv.className = 'message error';
+        messageDiv.textContent = 'Verification failed. Please try again.';
+      });
+    }
+
+    // File upload verification
+    document.getElementById('verifyForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      
+      const formData = new FormData();
+      const fileInput = document.getElementById('certificateFile');
+      if (!fileInput.files[0]) {
+        alert('Please select a certificate file');
+        return;
+      }
+      formData.append('certificate', fileInput.files[0]);
+      
+      try {
+        const response = await fetch('/verify', {
+          method: 'POST',
+          body: formData
+        });
+        
+        const result = await response.json();
+        displayVerificationResult(result);
+      } catch (error) {
+        console.error('Verify error:', error);
+        const messageDiv = document.getElementById('verifyMessage');
+        messageDiv.style.display = 'block';
+        messageDiv.className = 'message error';
+        messageDiv.textContent = 'Verification failed. Please try again.';
+      }
+    });
+
+    // Display verification results
+    function displayVerificationResult(result) {
+      const messageDiv = document.getElementById('verifyMessage');
+      const detailsDiv = document.getElementById('certificateDetails');
+      
+      messageDiv.style.display = 'block';
+      detailsDiv.style.display = 'none';
+      
+      if (result.status === 'success') {
+        messageDiv.className = 'message success';
+        messageDiv.textContent = result.message;
+        
+        // Show certificate details
+        if (result.certificateData) {
+          detailsDiv.style.display = 'block';
+          detailsDiv.className = 'certificate-details';
+          detailsDiv.innerHTML = `
+            <h3>Certificate Details</h3>
+            <div class="detail-row">
+              <span class="detail-label">Name:</span>
+              <span class="detail-value">${result.certificateData.name}</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Department:</span>
+              <span class="detail-value">${result.certificateData.department}</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Registration No:</span>
+              <span class="detail-value">${result.certificateData.regNo}</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Academic Year:</span>
+              <span class="detail-value">${result.certificateData.academicYear}</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Marks:</span>
+              <span class="detail-value">${result.certificateData.marks}</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Issued By:</span>
+              <span class="detail-value">${result.issuer}</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Issue Date:</span>
+              <span class="detail-value">${result.timestamp}</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Certificate Hash:</span>
+              <span class="detail-value" style="font-family: monospace; font-size: 12px;">${result.hash}</span>
+            </div>
+          `;
+        }
+      } else {
+        messageDiv.className = 'message error';
+        messageDiv.textContent = result.message;
+      }
+    }
+  </script>
+</body>
+</html>
