@@ -3,34 +3,273 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Blockchain Verifier - Login</title>
-  <link rel="stylesheet" href="styles.css">
+  <title>Blockchain Verifier - Secure Login</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    /* Header */
+    .header {
+      background: rgba(255, 255, 255, 0.95);
+      padding: 18px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+    
+    .header h1 {
+      font-size: 28px;
+      color: #667eea;
+      font-weight: 700;
+    }
+    
+    .nav-buttons {
+      display: flex;
+      gap: 12px;
+    }
+    
+    .nav-btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      color: white;
+      transition: all 0.3s;
+    }
+    
+    .nav-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    }
+    
+    /* Main Container */
+    .login-container {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 30px 20px;
+    }
+    
+    .login-card {
+      background: white;
+      padding: 45px;
+      border-radius: 12px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      width: 100%;
+      max-width: 400px;
+      animation: slideUp 0.6s ease;
+    }
+    
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(40px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .login-header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    
+    .login-header h2 {
+      font-size: 28px;
+      color: #333;
+      margin-bottom: 8px;
+    }
+    
+    .login-header p {
+      color: #999;
+      font-size: 14px;
+    }
+    
+    /* Form */
+    .form-group {
+      margin-bottom: 20px;
+    }
+    
+    .form-group label {
+      display: block;
+      font-size: 14px;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 8px;
+    }
+    
+    .form-group input {
+      width: 100%;
+      padding: 12px 15px;
+      font-size: 15px;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      transition: all 0.3s;
+      font-family: inherit;
+    }
+    
+    .form-group input:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+    
+    .form-group input::placeholder {
+      color: #ccc;
+    }
+    
+    /* Button */
+    .btn-login {
+      width: 100%;
+      padding: 14px;
+      font-size: 16px;
+      font-weight: 700;
+      border: none;
+      border-radius: 8px;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      cursor: pointer;
+      transition: all 0.3s;
+      margin-top: 20px;
+      box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+    }
+    
+    .btn-login:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 30px rgba(102, 126, 234, 0.6);
+    }
+    
+    .btn-login:active {
+      transform: translateY(0);
+    }
+    
+    /* Message */
+    .message {
+      padding: 15px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 20px;
+      display: none;
+      text-align: center;
+      animation: slideDown 0.3s ease;
+    }
+    
+    @keyframes slideDown {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .message.success {
+      background-color: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+    
+    .message.error {
+      background-color: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+    
+    /* Info Box */
+    .login-info {
+      background: #f0f4ff;
+      padding: 15px;
+      border-radius: 8px;
+      margin-top: 20px;
+      font-size: 12px;
+      color: #555;
+      line-height: 1.6;
+    }
+    
+    .login-info strong {
+      color: #667eea;
+      display: block;
+      margin-bottom: 8px;
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+      .header {
+        flex-direction: column;
+        gap: 15px;
+        padding: 15px 20px;
+      }
+      
+      .header h1 {
+        font-size: 24px;
+      }
+      
+      .nav-buttons {
+        width: 100%;
+        justify-content: center;
+      }
+      
+      .login-card {
+        padding: 30px 20px;
+        max-width: 100%;
+      }
+      
+      .login-header h2 {
+        font-size: 24px;
+      }
+    }
+  </style>
 </head>
-<body class="login-page">
+<body>
+  <!-- Header -->
   <div class="header">
-    <h1>Welcome to Blockchain Verifier</h1>
+    <h1>🔐 Blockchain Verifier</h1>
     <div class="nav-buttons">
-      <a href="/" class="nav-btn">Home</a>
-      <a href="/login-page" class="nav-btn" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">Login</a>
+      <a href="/" class="nav-btn" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">Home</a>
+      <a href="/verifier" class="nav-btn" style="background: linear-gradient(135deg, #ff6b6b 0%, #ff9999 100%);">Verify</a>
     </div>
   </div>
 
-  <div class="container">
-    <form id="loginForm">
-      <div class="form-group">
-        <label for="username">Username</label>
-        <input type="text" id="username" name="username" class="form-control" required>
+  <!-- Login Container -->
+  <div class="login-container">
+    <div class="login-card">
+      <div class="login-header">
+        <h2>Secure Login</h2>
+        <p>Issue or manage your certificates</p>
       </div>
-      
-      <div class="form-group">
-        <label for="password">Password</label>
-        <input type="password" id="password" name="password" class="form-control" required>
+
+      <div id="message"></div>
+
+      <form id="loginForm">
+        <div class="form-group">
+          <label for="username">Username</label>
+          <input type="text" id="username" name="username" placeholder="Enter your username" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" placeholder="Enter your password" required>
+        </div>
+        
+        <button type="submit" class="btn-login">Sign In</button>
+      </form>
+
+      <div class="login-info">
+        <strong>Demo Credentials:</strong>
+        👤 Issuer: <strong>issuer</strong> / issuer123<br>
+        👤 Employer: <strong>employer</strong> / employer123
       </div>
-      
-      <button type="submit" class="btn btn-primary">Login</button>
-    </form>
-    
-    <div id="message" style="display: none;"></div>
+    </div>
   </div>
 
   <script>
@@ -50,15 +289,13 @@
         });
         
         const result = await response.json();
-        
         const messageDiv = document.getElementById('message');
         messageDiv.style.display = 'block';
         
         if (result.status === 'success') {
           messageDiv.className = 'message success';
-          messageDiv.textContent = 'Login successful! Redirecting...';
+          messageDiv.textContent = '✓ Login successful! Redirecting...';
           
-          // Store session ID
           localStorage.setItem('sessionId', result.sessionId);
           localStorage.setItem('userRole', result.role);
           
@@ -67,14 +304,14 @@
           }, 1000);
         } else {
           messageDiv.className = 'message error';
-          messageDiv.textContent = result.error;
+          messageDiv.textContent = '✗ ' + result.error;
         }
       } catch (error) {
         console.error('Login error:', error);
         const messageDiv = document.getElementById('message');
         messageDiv.style.display = 'block';
         messageDiv.className = 'message error';
-        messageDiv.textContent = 'Login failed. Please try again.';
+        messageDiv.textContent = '✗ Login failed. Please try again.';
       }
     });
   </script>

@@ -3,22 +3,290 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Blockchain Verifier</title>
-  <link rel="stylesheet" href="styles.css">
+  <title>Blockchain Certificate Verifier - Secure & Transparent</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #333;
+      min-height: 100vh;
+    }
+    
+    /* Header */
+    .header {
+      background: rgba(255, 255, 255, 0.95);
+      padding: 18px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    
+    .header h1 {
+      font-size: 28px;
+      color: #667eea;
+      font-weight: 700;
+      margin: 0;
+    }
+    
+    .nav-buttons {
+      display: flex;
+      gap: 12px;
+    }
+    
+    .nav-btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      color: white;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    
+    .nav-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    }
+    
+    /* Main Container */
+    .home-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 60px 30px;
+      text-align: center;
+      color: white;
+    }
+    
+    .main-title-center {
+      font-size: 52px;
+      font-weight: 800;
+      margin-bottom: 20px;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+      animation: fadeInDown 0.8s ease;
+    }
+    
+    .sub-title-center {
+      font-size: 24px;
+      font-weight: 300;
+      margin-bottom: 40px;
+      color: rgba(255, 255, 255, 0.95);
+      animation: fadeInUp 0.8s ease 0.2s both;
+    }
+    
+    @keyframes fadeInDown {
+      from { opacity: 0; transform: translateY(-30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    /* Features Section */
+    .features-section {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 25px;
+      margin-bottom: 50px;
+      animation: fadeInUp 1s ease 0.4s both;
+    }
+    
+    .feature-card {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      text-align: center;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    
+    .feature-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+    }
+    
+    .feature-icon {
+      font-size: 48px;
+      margin-bottom: 15px;
+    }
+    
+    .feature-card h3 {
+      color: #667eea;
+      font-size: 20px;
+      margin-bottom: 12px;
+    }
+    
+    .feature-card p {
+      color: #666;
+      font-size: 15px;
+      line-height: 1.6;
+    }
+    
+    /* CTA Section */
+    .cta-section {
+      text-align: center;
+      margin-bottom: 40px;
+      animation: fadeInUp 1s ease 0.6s both;
+    }
+    
+    .cta-buttons {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 25px;
+    }
+    
+    .btn-primary, .btn-secondary {
+      padding: 14px 35px;
+      font-size: 16px;
+      font-weight: 700;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.3s;
+      display: inline-block;
+    }
+    
+    .btn-primary {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+    }
+    
+    .btn-primary:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 30px rgba(102, 126, 234, 0.6);
+    }
+    
+    .btn-secondary {
+      background: white;
+      color: #667eea;
+      border: 2px solid #667eea;
+    }
+    
+    .btn-secondary:hover {
+      background: #f8f9ff;
+      transform: translateY(-3px);
+    }
+    
+    /* Footer */
+    footer {
+      background: rgba(0, 0, 0, 0.1);
+      color: white;
+      text-align: center;
+      padding: 25px;
+      margin-top: 60px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    footer p {
+      font-size: 14px;
+      margin: 5px 0;
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+      .header {
+        flex-direction: column;
+        gap: 15px;
+        padding: 15px 20px;
+      }
+      
+      .header h1 {
+        font-size: 24px;
+      }
+      
+      .nav-buttons {
+        width: 100%;
+        justify-content: center;
+      }
+      
+      .home-container {
+        padding: 40px 20px;
+      }
+      
+      .main-title-center {
+        font-size: 36px;
+      }
+      
+      .sub-title-center {
+        font-size: 18px;
+      }
+      
+      .cta-buttons {
+        flex-direction: column;
+        gap: 10px;
+      }
+      
+      .btn-primary, .btn-secondary {
+        width: 100%;
+      }
+    }
+  </style>
 </head>
-<body class="home-page">
+<body>
+  <!-- Header -->
   <div class="header">
-    <h1>Blockchain Verifier</h1>
+    <h1>🔐 Blockchain Verifier</h1>
     <div class="nav-buttons">
-      <a href="/" class="nav-btn">Home</a>
-      <a href="/verifier" class="nav-btn" style="background: linear-gradient(135deg, #ff6b6b 0%, #ffa8a8 100%);">Verifier</a>
-      <a href="/login-page" class="nav-btn" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">Login</a>
+      <a href="/" class="nav-btn" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">Home</a>
+      <a href="/verifier" class="nav-btn" style="background: linear-gradient(135deg, #ff6b6b 0%, #ff9999 100%);">Verify</a>
+      <a href="/login-page" class="nav-btn" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">Sign In</a>
     </div>
   </div>
 
+  <!-- Main Container -->
   <div class="home-container">
-    <h1 class="main-title-center">Blockchain Verifier</h1>
-    <p class="sub-title-center">Secure, Transparent, Immutable Certificate Verification</p>
+    <h1 class="main-title-center">Secure Certificate Verification</h1>
+    <p class="sub-title-center">Verify your academic certificates on the blockchain with complete transparency and security</p>
+
+    <!-- Features Section -->
+    <div class="features-section">
+      <div class="feature-card">
+        <div class="feature-icon">🔗</div>
+        <h3>Blockchain-Backed</h3>
+        <p>Certificates are securely stored on the blockchain. Immutable and tamper-proof verification in real-time.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">📱</div>
+        <h3>QR Code Scan</h3>
+        <p>Generate QR codes for instant verification. Perfect for sharing credentials on LinkedIn, resumes, and more.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">✅</div>
+        <h3>Instant Verification</h3>
+        <p>Employers and institutions can verify certificates in seconds without contacting educational bodies.</p>
+      </div>
+    </div>
+
+    <!-- CTA Section -->
+    <div class="cta-section">
+      <h2 style="color: white; font-size: 32px; margin-bottom: 10px;">Get Started Today</h2>
+      <p style="color: rgba(255, 255, 255, 0.9); font-size: 16px;">Issue or verify certificates with complete security</p>
+      <div class="cta-buttons">
+        <a href="/login-page" class="btn-primary">📝 Issue Certificate</a>
+        <a href="/verifier" class="btn-secondary">🔍 Verify Certificate</a>
+      </div>
+    </div>
   </div>
+
+  <!-- Footer -->
+  <footer>
+    <p><strong>Blockchain Certificate Verifier</strong></p>
+    <p>Built with Truffle • Ganache • Web3 | © 2025 All Rights Reserved</p>
+    <p style="font-size: 12px; margin-top: 10px;">Secure • Transparent • Immutable</p>
+  </footer>
 </body>
 </html>

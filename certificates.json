@@ -1,24 +1,13 @@
 [
   {
-    "hash": "4b23510d7a40c3f9e7023efe84bddb60384d0c1f6db383e67a582741252f97e3",
-    "department": "ISE",
-    "name": "Arjun",
+    "hash": "7e707c400896ca3d19bcf941d28305afb7a05ef378330c8098779b321392eec2",
+    "department": "Cse",
+    "name": "Paddu",
     "academicYear": "2025",
-    "regNo": "1BI24IS145",
-    "joinDate": "2025-10-01",
-    "endDate": "2025-10-22",
-    "marks": "100",
-    "timestamp": "2025-10-23T06:01:18.058Z"
-  },
-  {
-    "hash": "b08d914409c582b0a2b7a5bd0d8ee3d6536f6e01b4ca3457249de689e2bad131",
-    "department": "EEE",
-    "name": "Raju",
-    "academicYear": "2023",
-    "regNo": "1BI24IS122",
-    "joinDate": "2025-10-03",
-    "endDate": "2025-10-20",
-    "marks": "70",
-    "timestamp": "2025-10-23T06:16:08.945Z"
+    "regNo": "1BI24IS121",
+    "joinDate": "2025-11-07",
+    "endDate": "2025-11-18",
+    "marks": "B",
+    "timestamp": "2025-11-20T16:06:28.317Z"
   }
 ]
